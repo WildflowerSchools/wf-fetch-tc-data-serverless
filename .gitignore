@@ -26,3 +26,4 @@ ENV/
 env.bak/
 venv.bak/
 .remote-sync.json
+.python-version

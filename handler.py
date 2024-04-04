@@ -37,6 +37,7 @@ SERVICE_ACCOUNT_INFO_DICT = {
 
 def fetch_and_store_rosters_current(event, context):
     timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+    logger.info(f"Fetching Transparent classroom data at {timestamp.isoformat()}")
     student_data_combined, teacher_data_combined = fetch_rosters(
         only_current=True,
         username=TRANSPARENT_CLASSROOM_USERNAME,
@@ -74,11 +75,13 @@ def fetch_rosters(
         api_token=api_token,
         url_base=url_base,
     )
+    logger.info('Fetching school data')
     school_data = tc_client.fetch_school_data(
         pull_datetime=None,
         format='dataframe'
     )
     school_ids = school_data.index.tolist()
+    logger.info('Fetching student-classroom associations')
     student_classroom_data = tc_client.fetch_student_classroom_data(
         school_ids=school_ids,
         session_data=None,
@@ -86,22 +89,26 @@ def fetch_rosters(
         only_current=only_current,
         format='dataframe'
     )
+    logger.info('Fetching classroom data')
     classroom_data = tc_client.fetch_classroom_data(
         school_ids=school_ids,
         pull_datetime=None,
         format='dataframe'
     )
+    logger.info('Fetching student data')
     student_data, student_parent_data = tc_client.fetch_student_data(
         school_ids=school_ids,
         pull_datetime=None,
         only_current=only_current,
         format='dataframe'
     )
+    logger.info('Fetching teacher data')
     teacher_data = tc_client.fetch_teacher_data(
         school_ids=school_ids,
         pull_datetime=None,
         format='dataframe'
     )
+    logger.info('Joining tables')
     student_data_combined = (
         student_classroom_data
         .droplevel('session_id_tc')
@@ -168,6 +175,7 @@ def store_rosters(
     recipient_email_address,
     service_account_info_dict,
 ):
+    logger.info(f"Creating Google sheet with name '{spreadsheet_name}'")
     spreadsheet_id = create_google_sheet(
         spreadsheet_name=spreadsheet_name,
         service_account_info_dict=service_account_info_dict,
@@ -180,6 +188,7 @@ def store_rosters(
         spread=spreadsheet_id,
         creds=credentials
     )
+    logger.info(f"Writing data to '{spreadsheet_name}'")
     spread.df_to_sheet(
         df=student_data_combined,
         replace=True,

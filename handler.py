@@ -12,14 +12,14 @@ logger.setLevel(logging.INFO)
 
 # Get configuration from environment variables
 
-transparent_classroom_username = os.environ.get('TRANSPARENT_CLASSROOM_USERNAME')
-transparent_classroom_password = os.environ.get('TRANSPARENT_CLASSROOM_PASSWORD')
+TRANSPARENT_CLASSROOM_USERNAME = os.environ.get('TRANSPARENT_CLASSROOM_USERNAME')
+TRANSPARENT_CLASSROOM_PASSWORD = os.environ.get('TRANSPARENT_CLASSROOM_PASSWORD')
 
-recipient_email_address = os.environ.get('TC_DOWNLOAD_RECIPIENT_EMAIL_ADDRESS')
+RECIPIENT_EMAIL_ADDRESS = os.environ.get('TC_DOWNLOAD_RECIPIENT_EMAIL_ADDRESS')
 
-spreadsheet_name_base = os.environ.get('TC_DOWNLOAD_SPREADSHEET_NAME_BASE', 'transparent_classroom_rosters')
+SPREADSHEET_NAME_BASE = os.environ.get('TC_DOWNLOAD_SPREADSHEET_NAME_BASE', 'transparent_classroom_rosters')
 
-service_account_info_dict = {
+SERVICE_ACCOUNT_INFO_DICT = {
     'type': os.environ.get('TC_DOWNLOAD_GOOGLE_AUTH_TYPE', 'service_account'),
     'project_id': os.environ.get('TC_DOWNLOAD_GOOGLE_AUTH_PROJECT_ID'),
     'private_key_id': os.environ.get('TC_DOWNLOAD_GOOGLE_AUTH_PRIVATE_KEY_ID'),
@@ -39,17 +39,17 @@ def fetch_and_store_rosters_current(event, context):
     timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
     student_data_combined, teacher_data_combined = fetch_rosters(
         only_current=True,
-        username=transparent_classroom_username,
-        password=transparent_classroom_password,
+        username=TRANSPARENT_CLASSROOM_USERNAME,
+        password=TRANSPARENT_CLASSROOM_PASSWORD,
     )
     timestamp_string = timestamp.strftime('%Y%m%d_%H%M%S')
-    spreadsheet_name = f'{spreadsheet_name_base}_current_{timestamp_string}'
+    spreadsheet_name = f'{SPREADSHEET_NAME_BASE}_current_{timestamp_string}'
     spreadsheet_id = store_rosters(
         student_data_combined=student_data_combined,
         teacher_data_combined=teacher_data_combined,
         spreadsheet_name=spreadsheet_name,
-        recipient_email_address=recipient_email_address,
-        service_account_info_dict=service_account_info_dict,
+        recipient_email_address=RECIPIENT_EMAIL_ADDRESS,
+        service_account_info_dict=SERVICE_ACCOUNT_INFO_DICT,
     )
     body = {
         "message": f"Success. Data stored in spreadsheet {spreadsheet_id}",

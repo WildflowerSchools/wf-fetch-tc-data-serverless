@@ -1,0 +1,6 @@
+name: wf-fetch-tc-data-serverless
+org: Wildflower Schools
+description: A Severless application for fetching Wildflower data from Transparent Classroom and storing it in a Google Sheet
+keywords: aws, serverless, lambda, python
+repo: https://github.com/WildflowerSchools/wf-fetch-tc-data-serverless
+license: MIT

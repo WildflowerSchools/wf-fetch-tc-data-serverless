@@ -1,0 +1,16 @@
+service: wf-fetch-tc-data-serverless
+
+frameworkVersion: '3'
+
+
+provider:
+  name: aws
+  runtime: python3.9
+
+functions:
+  fetch_and_store_rosters_current:
+    handler: handler.fetch_and_store_rosters_current
+    events:
+      - http:
+          path: /
+          method: get

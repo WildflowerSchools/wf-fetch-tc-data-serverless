@@ -1,9 +1,17 @@
+import datetime
+import json
+import logging
+import os
+
+try:
+    import unzip_requirements
+except ImportError:
+    pass
+
 import wf_core_data
 import gspread
 import gspread_pandas
-import datetime
-import logging
-import os
+
 
 # Set up logger
 
@@ -15,7 +23,7 @@ logger.setLevel(logging.INFO)
 TRANSPARENT_CLASSROOM_USERNAME = os.environ.get('TRANSPARENT_CLASSROOM_USERNAME')
 TRANSPARENT_CLASSROOM_PASSWORD = os.environ.get('TRANSPARENT_CLASSROOM_PASSWORD')
 
-RECIPIENT_EMAIL_ADDRESS = os.environ.get('TC_DOWNLOAD_RECIPIENT_EMAIL_ADDRESS')
+RECIPIENT_EMAIL_ADDRESS = os.environ.get('RECIPIENT_EMAIL_ADDRESS')
 
 SPREADSHEET_NAME_BASE = os.environ.get('TC_DOWNLOAD_SPREADSHEET_NAME_BASE', 'transparent_classroom_rosters')
 
@@ -23,7 +31,7 @@ SERVICE_ACCOUNT_INFO_DICT = {
     'type': os.environ.get('TC_DOWNLOAD_GOOGLE_AUTH_TYPE', 'service_account'),
     'project_id': os.environ.get('TC_DOWNLOAD_GOOGLE_AUTH_PROJECT_ID'),
     'private_key_id': os.environ.get('TC_DOWNLOAD_GOOGLE_AUTH_PRIVATE_KEY_ID'),
-    'private_key': os.environ.get('TC_DOWNLOAD_GOOGLE_AUTH_PRIVATE_KEY'),
+    'private_key': bytes(os.environ.get('TC_DOWNLOAD_GOOGLE_AUTH_PRIVATE_KEY'), "utf-8").decode("unicode_escape"),
     'client_email': os.environ.get('TC_DOWNLOAD_GOOGLE_AUTH_CLIENT_EMAIL'),
     'client_id': os.environ.get('TC_DOWNLOAD_GOOGLE_AUTH_CLIENT_ID'),
     'auth_uri': os.environ.get('TC_DOWNLOAD_GOOGLE_AUTH_AUTH_URI', 'https://accounts.google.com/o/oauth2/auth'),
